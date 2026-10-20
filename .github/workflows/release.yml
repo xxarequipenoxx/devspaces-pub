@@ -16,6 +16,6 @@ concurrency:
 
 jobs:
   version:
-    uses: xxarequipenoxx/github-standards/.github/workflows/release.yml@v0.10.0
+    uses: xxarequipenoxx/github-standards/.github/workflows/release.yml@v0.10.1
     permissions:
       contents: write
