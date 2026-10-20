@@ -3,8 +3,8 @@ name: pr
 # Thin caller of the reusable workflows of github-standards (README section 8 there). The
 # logic lives in github-standards; Renovate proposes new release tags as pull requests.
 #
-# Status checks: commits / conventional commits, security / gitleaks, security / zizmor.
-# These names are the project's required checks.
+# Status checks: commits / conventional commits, security / gitleaks, security / zizmor,
+# plus devfile lint. The first three are the project's required checks.
 
 on:
   pull_request:
@@ -29,3 +29,26 @@ jobs:
     permissions:
       contents: read
       security-events: write
+
+  # Language job: the repository holds a devfile (not a Kubernetes manifest), so the check
+  # is yamllint on every YAML file plus validation of devfile.yaml against the devfile 2.2.2
+  # JSON schema, fetched from the commit of the devfile/api v2.2.2 tag. The devfile schema
+  # uses regex escapes that only the Python regex engine accepts, hence --regex-variant.
+  devfile:
+    name: devfile lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      DEVFILE_SCHEMA: https://raw.githubusercontent.com/devfile/api/a6ec0a38307b63a29fad2eea945cc69bee97a683/schemas/latest/devfile.json
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: yamllint
+        run: uvx yamllint==1.38.0 --format github .
+      - name: devfile schema
+        run: >-
+          uvx --from check-jsonschema==0.38.2 check-jsonschema
+          --regex-variant python --schemafile "${DEVFILE_SCHEMA}" devfile.yaml

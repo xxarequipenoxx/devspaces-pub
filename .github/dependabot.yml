@@ -1,0 +1,15 @@
+# Dependabot handles security updates only; Renovate (renovate.json) does every version
+# update. open-pull-requests-limit: 0 disables version updates without affecting security
+# updates, and the prefix makes security pull requests conventional ("ci(deps): bump ...")
+# so they pass the commits check. GitHub Actions is the only ecosystem of this repository.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci(deps)
