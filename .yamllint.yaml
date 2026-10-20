@@ -1,0 +1,11 @@
+# yamllint settings, read by the devfile job of .github/workflows/pr.yml.
+extends: default
+rules:
+  comments:
+    min-spaces-from-content: 1 # "uses: owner/action@<sha> # vX.Y.Z" pins
+  document-start: disable
+  line-length:
+    max: 120
+    allow-non-breakable-inline-mappings: true # pinned schema URL
+  truthy:
+    check-keys: false # the "on:" key of GitHub workflows
