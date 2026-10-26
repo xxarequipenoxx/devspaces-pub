@@ -37,6 +37,7 @@ jobs:
   devfile:
     name: devfile lint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     env:
